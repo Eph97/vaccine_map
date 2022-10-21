@@ -80,7 +80,7 @@
 			map.data.addListener('click', function(event) {
 			  let treatment = event.feature.getProperty("treatment");
 			  let type = event.feature.getProperty("Clinic_Type");
-			  let html = 'Treatment: ' + state + '\n Type: ' + type; // combine state name with a label
+			  let html = 'Treatment: ' + state; // combine state name with a label
 			  infowindow.setContent(html); // show the html variable in the infowindow
 			  infowindow.setPosition(event.latLng); // anchor the infowindow at the marker
 			  infowindow.setOptions({pixelOffset: new google.maps.Size(0,-30)}); // move the infowindow up slightly to the top of the marker icon
