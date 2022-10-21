@@ -1,98 +1,111 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Data Layer: Simple</title>
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    <style>
-      
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #info-box {
-        background-color: white;
-        border: 1px solid black;
-        bottom: 30px;
-        height: 20px;
-        padding: 10px;
-        position: absolute;
-        left: 30px;
-      }
-    
-    </style>
-  </head>
-  <body>
-    
-	
-	<div id="map"></div>
-	<script>
+	<head>
+		<title>Data Layer: Simple</title>
+		<meta name="viewport" content="initial-scale=1.0">
+		<meta charset="utf-8">
+		<style>
 
-		  var map;
-		const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
-		const Blue = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-		const Red = "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+#map {
+	height: 100%;
+}
+	  /* Optional: Makes the sample page fill the window. */
+	  html, body {
+		  height: 100%;
+		  margin: 0;
+		  padding: 0;
+	  }
+	  #info-box {
+		  background-color: white;
+		  border: 1px solid black;
+		  bottom: 30px;
+		  height: 20px;
+		  padding: 10px;
+		  position: absolute;
+		  left: 30px;
+	  }
 
-		  function initMap() {
-			map = new google.maps.Map(document.getElementById('map'), {
-			  zoom: 8,
-			  center: {lat: 25.4179059, lng: 86.1075239}
-			});
+		</style>
+	</head>
+	<body>
 
-					  // NOTE: This uses cross-domain XHR, and may not work on older browsers.
-					  map.data.loadGeoJson(
-								  'https://raw.githubusercontent.com/Eph97/vaccine_map/main/sites.json', {}, function(features) {
-										  });
-				
-					  // const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-					  // map.data.setStyle({
-					  // fillColor: 'green',
-					  // // icon: image,
-					  // icon: iconBase + "parking_lot_maps.png",
-					  // // strokeWeight: 1
-					  // 		})
-					  map.data.setStyle(function(feature) {
-								  var ascii = feature.getProperty("treatment");
-								  // var color = ascii == "Treatment" ? iconBase + "parking_lot_maps.png" : iconBase + "library_maps.png";
-								  var color = ascii == "Treatment" ? Blue : Red;
-								  return {
-											  icon: color,
-										  };
-								  // icon: iconBase + "parking_lot_maps.png",
-									  // strokeWeight: 1
-							  })
-				
-			  // const beachMarker = new google.maps.Marker({
-				// position: { lat: -33.89, lng: 151.274 },
-				// map,
-				// icon: image,
-			  // });
-			
-			var infowindow = new google.maps.InfoWindow();
-			
-			map.data.addListener('click', function(event) {
-			  let treatment = event.feature.getProperty("treatment");
-			  let type = event.feature.getProperty("Clinic_Type");
-			  let html = 'Treatment: ' + state; // combine state name with a label
-			  infowindow.setContent(html); // show the html variable in the infowindow
-			  infowindow.setPosition(event.latLng); // anchor the infowindow at the marker
-			  infowindow.setOptions({pixelOffset: new google.maps.Size(0,-30)}); // move the infowindow up slightly to the top of the marker icon
-			  infowindow.open(map);
-			});
-			
-		  }
+
+		<div id="map"></div>
+		<script>
+
+			var map;
+			const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+			const Blue = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+			const Red = "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+
+			var styles = 
+				{
+								"featureType": "administrative.province",
+								"elementType": "geometry.stroke",
+								"stylers": [
+												{ "visibility": "on" },
+												{ "weight": 2.5 },
+												{ "color": "#24b0e2" }]
+							}
+
+							function initMap() {
+											map = new google.maps.Map(document.getElementById('map'), {
+															zoom: 8,
+															center: {lat: 25.4179059, lng: 86.1075239},
+															// styles:styles
+
+														});
+
+											// NOTE: This uses cross-domain XHR, and may not work on older browsers.
+											map.data.loadGeoJson(
+															'https://raw.githubusercontent.com/Eph97/vaccine_map/main/sites.json', {}, function(features) {
+																		});
+
+											// const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+											// map.data.setStyle({
+											// fillColor: 'green',
+											// // icon: image,
+											// icon: iconBase + "parking_lot_maps.png",
+											// // strokeWeight: 1
+											// 		})
+											map.data.setStyle(function(feature) {
+															var ascii = feature.getProperty("treatment");
+															// var color = ascii == "Treatment" ? iconBase + "parking_lot_maps.png" : iconBase + "library_maps.png";
+															var color = ascii == "Treatment" ? Red : Blue;
+															return {
+																			icon: color,
+																		};
+															// icon: iconBase + "parking_lot_maps.png",
+															// strokeWeight: 1
+														})
+
+											// const beachMarker = new google.maps.Marker({
+											// position: { lat: -33.89, lng: 151.274 },
+											// map,
+											// icon: image,
+											// });
+
+											var infowindow = new google.maps.InfoWindow();
+
+											map.data.addListener('click', function(event) {
+															let treatment = event.feature.getProperty("treatment");
+															let type = event.feature.getProperty("Clinic_Type");
+															// let html = 'Treatment: ' + state; // combine state name with a label
+															let html = 'Type: '+ type; // combine state name with a label
+															infowindow.setContent(html); // show the html variable in the infowindow
+															infowindow.setPosition(event.latLng); // anchor the infowindow at the marker
+															infowindow.setOptions({pixelOffset: new google.maps.Size(0,-30)}); // move the infowindow up slightly to the top of the marker icon
+															infowindow.open(map);
+														});
+
+										}
 		</script>
-    <script async defer
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvBd6fxqt-RUQAaeaBqHvk7upY5jQuX4E&callback=initMap">
+		<script async defer
+				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvBd6fxqt-RUQAaeaBqHvk7upY5jQuX4E&callback=initMap">
 			// G_MAPS_API_KEY =
-    </script>
-  </body>
+		</script>
+	</body>
 </html>
 
