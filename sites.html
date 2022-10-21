@@ -36,29 +36,51 @@
 	<script>
 
 		  var map;
+		const iconBase = "https://developers.google.com/maps/documentation/javascript/examples/full/images/";
+		const Blue = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+		const Red = "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+
 		  function initMap() {
 			map = new google.maps.Map(document.getElementById('map'), {
 			  zoom: 8,
 			  center: {lat: 25.4179059, lng: 86.1075239}
 			});
 
-			// NOTE: This uses cross-domain XHR, and may not work on older browsers.
-			map.data.loadGeoJson(
-				//Replace with url of GeoJSON on your server
-				// 'https://raw.githubusercontent.com/Eph97/vaccine_map/main/states.json');
-				'https://raw.githubusercontent.com/Eph97/vaccine_map/main/sites.json');
+					  // NOTE: This uses cross-domain XHR, and may not work on older browsers.
+					  map.data.loadGeoJson(
+								  'https://raw.githubusercontent.com/Eph97/vaccine_map/main/sites.json', {}, function(features) {
+										  });
 				
-			map.data.setStyle({
-			  fillColor: 'green',
-			  strokeWeight: 1
-			});
+					  // const image = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+					  // map.data.setStyle({
+					  // fillColor: 'green',
+					  // // icon: image,
+					  // icon: iconBase + "parking_lot_maps.png",
+					  // // strokeWeight: 1
+					  // 		})
+					  map.data.setStyle(function(feature) {
+								  var ascii = feature.getProperty("treatment");
+								  // var color = ascii == "Treatment" ? iconBase + "parking_lot_maps.png" : iconBase + "library_maps.png";
+								  var color = ascii == "Treatment" ? Blue : Red;
+								  return {
+											  icon: color,
+										  };
+								  // icon: iconBase + "parking_lot_maps.png",
+									  // strokeWeight: 1
+							  })
 				
+			  // const beachMarker = new google.maps.Marker({
+				// position: { lat: -33.89, lng: 151.274 },
+				// map,
+				// icon: image,
+			  // });
 			
 			var infowindow = new google.maps.InfoWindow();
 			
 			map.data.addListener('click', function(event) {
-			  let state = event.feature.getProperty("NAME");
-			  let html = 'State: ' + state; // combine state name with a label
+			  let treatment = event.feature.getProperty("treatment");
+			  let type = event.feature.getProperty("Clinic_Type");
+			  let html = 'Treatment: ' + state + '\n Type: ' + type; // combine state name with a label
 			  infowindow.setContent(html); // show the html variable in the infowindow
 			  infowindow.setPosition(event.latLng); // anchor the infowindow at the marker
 			  infowindow.setOptions({pixelOffset: new google.maps.Size(0,-30)}); // move the infowindow up slightly to the top of the marker icon
